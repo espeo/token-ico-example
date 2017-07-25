@@ -1,0 +1,17 @@
+{
+  "name": "token-ico-blog-example",
+  "version": "1.0.0",
+  "description": "Espeo Token and ICO example for a blog post",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "truffle test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "zeppelin-solidity": "^1.2.0"
+  }
+}
