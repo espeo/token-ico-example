@@ -1,5 +1,6 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.15;
 
+import 'zeppelin-solidity/contracts/token/ERC20Basic.sol';
 import 'zeppelin-solidity/contracts/token/StandardToken.sol';
 
 
@@ -37,6 +38,7 @@ contract EspeoTokenIco is StandardToken {
 
         // initially assign all tokens to the fundsWallet
         balances[fundsWallet] = totalSupply;
+        Transfer(0x0, fundsWallet, totalSupply);
     }
 
     function() isIcoOpen payable {
@@ -45,6 +47,7 @@ contract EspeoTokenIco is StandardToken {
         uint256 tokenAmount = calculateTokenAmount(msg.value);
         balances[fundsWallet] = balances[fundsWallet].sub(tokenAmount);
         balances[msg.sender] = balances[msg.sender].add(tokenAmount);
+        Transfer(fundsWallet, msg.sender, tokenAmount);
 
         // immediately transfer ether to fundsWallet
         fundsWallet.transfer(msg.value);
