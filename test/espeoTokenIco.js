@@ -11,7 +11,7 @@ const fail = (msg) => (error) => assert(false, error ? `${msg}, but got error: $
 const assertExpectedError = async (promise) => {
   try {
     await promise;
-    fail('expected to fail');
+    fail('expected to fail')();
   } catch (error) {
     assert(error.message.indexOf('invalid opcode') >= 0, `Expected throw, but got: ${error.message}`);
   }
@@ -73,7 +73,7 @@ contract('EspeoTokenIco', accounts => {
     const espeoToken = await EspeoTokenIco.new(fundsWallet, startTimestamp, minCap, maxCap);
 
     // should be closed
-    assertExpectedError(espeoToken.sendTransaction(transaction(buyerOneWallet, oneEth)));
+    await assertExpectedError(espeoToken.sendTransaction(transaction(buyerOneWallet, oneEth)));
 
     await timeController.addSeconds(3600);
 
@@ -88,7 +88,7 @@ contract('EspeoTokenIco', accounts => {
     await timeController.addDays(4 * 7);
 
     // should be closed
-    assertExpectedError(espeoToken.sendTransaction(transaction(buyerTwoWallet, oneEth)));
+    await assertExpectedError(espeoToken.sendTransaction(transaction(buyerTwoWallet, oneEth)));
 
     const totalRaised = await espeoToken.totalRaised();
     assert.equal(totalRaised.toNumber(), minCap, 'Total raised amount mismatch')
@@ -107,7 +107,7 @@ contract('EspeoTokenIco', accounts => {
     await espeoToken.sendTransaction(transaction(buyerTwoWallet, minCap - oneEth));
 
     // should be closed
-    assertExpectedError(espeoToken.sendTransaction(transaction(buyerThreeWallet, oneEth)));
+    await assertExpectedError(espeoToken.sendTransaction(transaction(buyerThreeWallet, oneEth)));
 
     const totalRaised = await espeoToken.totalRaised();
     assert.equal(totalRaised.toNumber(), minCap, 'Total raised amount mismatch');
@@ -124,7 +124,7 @@ contract('EspeoTokenIco', accounts => {
     await espeoToken.sendTransaction(transaction(buyerTwoWallet, maxCap));
 
     // should close after reaching max cap
-    assertExpectedError(espeoToken.sendTransaction(transaction(buyerThreeWallet, oneEth)));
+    await assertExpectedError(espeoToken.sendTransaction(transaction(buyerThreeWallet, oneEth)));
 
     const totalRaised = await espeoToken.totalRaised();
     assert.equal(totalRaised.toNumber(), maxCap + oneEth, 'Total raised amount mismatch');
@@ -154,7 +154,7 @@ contract('EspeoTokenIco', accounts => {
     const espeoToken = await EspeoTokenIco.new(fundsWallet, startTimestamp, minCap, maxCap);
 
     // should not allow token transfer before ICO
-    assertExpectedError(espeoToken.transfer(buyerTwoWallet, 1, { from: buyerOneWallet }));
+    await assertExpectedError(espeoToken.transfer(buyerTwoWallet, 1, { from: buyerOneWallet }));
   });
 
   it('should not allow token transfers during ICO', async () => {
@@ -163,7 +163,7 @@ contract('EspeoTokenIco', accounts => {
     await espeoToken.sendTransaction(transaction(buyerOneWallet, oneEth));
 
     // should not allow token transfer during ICO
-    assertExpectedError(espeoToken.transfer(buyerTwoWallet, 1, { from: buyerOneWallet }));
+    await assertExpectedError(espeoToken.transfer(buyerTwoWallet, 1, { from: buyerOneWallet }));
   });
 
   // REQ005: The tokens are going to be sold at a flat rate of 1 ETH : 50 ESP, 

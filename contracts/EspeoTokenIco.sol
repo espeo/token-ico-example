@@ -11,7 +11,7 @@ contract EspeoTokenIco is StandardToken {
     string public symbol = "ESP";
     uint256 public decimals = 18;
 
-    uint256 public totalSupply = 1000000 * (10 ** decimals);
+    uint256 public totalSupply = 1000000 * (uint256(10) ** decimals);
     uint256 public totalRaised; // total ether raised (in wei)
 
     uint256 public startTimestamp; // timestamp after which ICO will start
